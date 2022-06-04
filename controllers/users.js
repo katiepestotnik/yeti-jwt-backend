@@ -1,27 +1,30 @@
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
 
-// Create
-// const signup = async (req, res) => {
-//   const user = new User(req.body);
-//   try {
-//     await user.save();
-//     // TODO: Send back a JWT instead of the user
-//     res.json(user);
-//   } catch (err) {
-//     // Probably a schema error
-//     res.status(400).json(err);
-//   }
-// };
+// Add the SECRET
+const SECRET = process.env.SECRET;
 
 const signup = async (req, res) => {
   try {
-    // TODO: Send back a JWT instead of the user
-    res.json(await User.create(req.body));
+    let user = await User.create(req.body);
+    const token = createJWT(user);
+    // Send back a JWT
+    res.json({ token });
   } catch (error) {
-    // Probably a schema error
+    // Probably a duplicate email
     res.status(400).json(error);
   }
 };
+
+/*----- Helper Functions -----*/
+
+function createJWT(user) {
+  return jwt.sign(
+    { user }, // data payload
+    SECRET,
+    { expiresIn: "24h" }
+  );
+}
 
 module.exports = {
   signup,
