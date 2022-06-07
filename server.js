@@ -19,8 +19,13 @@ app.use(express.json());
 app.use(cors());
 
 // Routers
-app.use("/people", peopleRouter);
+
+
 app.use("/users", usersRouter);
+// Mount our custom auth middleware to protect routes below it
+app.use(require("./config/auth"));
+app.use("/people", peopleRouter);
+
 
 // Listener
 const { PORT = 3001 } = process.env;

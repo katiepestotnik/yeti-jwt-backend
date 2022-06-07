@@ -39,6 +39,10 @@ userSchema.pre("save", function (next) {
   });
 });
 
+userSchema.methods.comparePassword = function(tryPassword, cb) { // cant use arrow function here
+  bcrypt.compare(tryPassword, this.password, cb);
+};
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
